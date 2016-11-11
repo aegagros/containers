@@ -1,6 +1,6 @@
-#ifndef DYNAMIC_ARRAY_H
-#define DYNAMIC_ARRAY_H
-#include "common.h"
+#pragma once
+#include <utility>
+#include <stdexcept>
 
 /**
  * \brief A template class to handle a continuous dynamic (extendable) range of objects.
@@ -21,48 +21,48 @@
  * middle of the array can be removed by copying (copy-assignment) the last one on top of it and
  * reducing the size by one. However, this changes the order of the objects.
  *
- * TODO: Avoid code-duplication by using a static_array<T> as storage.
- *
  * For debug purposes, we have added an additional m_dbgPtr* pointer which can be used by
  * a debugger to inspect the m_storage array as an actual array of T.
  */
 
-template <typename T>
+template <typename T, typename L = unsigned int>
 class dynamic_array {
 public:
+    using length_t = L;
+
     /// Default constructor.
     dynamic_array()
-        : m_capacity(0), m_size(0), m_storage(NULL)
+        : m_capacity(0), m_size(0), m_storage(nullptr)
 #ifdef DEBUG
-          , m_dbgPtr(NULL)
+          , m_dbgPtr(nullptr)
 #endif
     {}
     /// Construct with an initial capacity.
     dynamic_array(length_t capacity)
-        : m_capacity(capacity), m_size(0), m_storage(NULL)
+        : m_capacity(capacity), m_size(0), m_storage(nullptr)
 #ifdef DEBUG
-          , m_dbgPtr(NULL)
+          , m_dbgPtr(nullptr)
 #endif
     {
         allocate(capacity);
     }
     /// Construct with an initial amount of copies (size = capacity)
     dynamic_array(length_t count, const T &val)
-        : m_capacity(count), m_size(count), m_storage(NULL)
+        : m_capacity(count), m_size(count), m_storage(nullptr)
 #ifdef DEBUG
-          , m_dbgPtr(NULL)
+          , m_dbgPtr(nullptr)
 #endif
     {
-        allocate(capacity);
+        allocate(m_capacity);
         for (length_t i = 0; i < m_size; i++) {
             construct(i, val);
         }
     }
     /// Copy-constructor; performs a copy of the array.
     dynamic_array(const dynamic_array<T> &other)
-        : m_capacity(other.m_capacity), m_size(other.m_size), m_storage(NULL)
+        : m_capacity(other.m_capacity), m_size(other.m_size), m_storage(nullptr)
 #ifdef DEBUG
-          , m_dbgPtr(NULL)
+          , m_dbgPtr(nullptr)
 #endif
     {
         allocate(m_capacity);
@@ -89,13 +89,14 @@ public:
     ~dynamic_array()
     { free(); }
     /// Swap two dynamic arrays
-    void swapWith(dynamic_array<T> &other)
+    friend void swap(dynamic_array<T> &first, dynamic_array<T> &second)
     {
-        swap(m_capacity, other.m_capacity);
-        swap(m_size, other.m_size);
-        swap(m_storage, other.m_storage);
+        using std::swap;
+        swap(first.m_capacity, second.m_capacity);
+        swap(first.m_size, second.m_size);
+        swap(first.m_storage, second.m_storage);
 #ifdef DEBUG
-        swap(m_dbgPtr, other.m_dbgPtr);
+        swap(first.m_dbgPtr, second.m_dbgPtr);
 #endif
     }
 
@@ -284,7 +285,7 @@ protected:
             // now we can free up the memory
             delete[] m_storage;
 #ifdef DEBUG
-            m_dbgPtr = NULL;
+            m_dbgPtr = nullptr;
 #endif
         }
     }
@@ -296,13 +297,4 @@ private:
     T *m_dbgPtr;
 #endif
 };
-
-// Overload the swap function to use 'swapWith' member function instead of the generic implementation
-template <typename T>
-void swap(dynamic_array<T> &first, dynamic_array<T> &second)
-{
-    first.swapWith(second);
-}
-
-#endif
 
