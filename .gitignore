@@ -1,0 +1,9 @@
+# Ignore qtCreator user files
+*.user
+
+# Ignore YouCompleteMe config file
+.ycm_extra_conf.py
+
+# Ignore build directory
+build/*
+
