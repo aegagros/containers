@@ -33,25 +33,16 @@ public:
     /// Default constructor.
     dynamic_array()
         : m_capacity(0), m_size(0), m_storage(nullptr)
-#ifdef DEBUG
-          , m_dbgPtr(nullptr)
-#endif
     {}
     /// Construct with an initial capacity.
     dynamic_array(length_t capacity)
         : m_capacity(capacity), m_size(0), m_storage(nullptr)
-#ifdef DEBUG
-          , m_dbgPtr(nullptr)
-#endif
     {
         allocate(capacity);
     }
     /// Construct with an initial amount of copies (size = capacity)
     dynamic_array(length_t count, const T &val)
         : m_capacity(count), m_size(count), m_storage(nullptr)
-#ifdef DEBUG
-          , m_dbgPtr(nullptr)
-#endif
     {
         allocate(m_capacity);
         for (length_t i = 0; i < m_size; i++) {
@@ -61,9 +52,6 @@ public:
     /// Copy-constructor; performs a copy of the array.
     dynamic_array(const dynamic_array<T> &other)
         : m_capacity(other.m_capacity), m_size(other.m_size), m_storage(nullptr)
-#ifdef DEBUG
-          , m_dbgPtr(nullptr)
-#endif
     {
         allocate(m_capacity);
         for (int i = 0; i < m_size; i++) {
@@ -95,9 +83,6 @@ public:
         swap(first.m_capacity, second.m_capacity);
         swap(first.m_size, second.m_size);
         swap(first.m_storage, second.m_storage);
-#ifdef DEBUG
-        swap(first.m_dbgPtr, second.m_dbgPtr);
-#endif
     }
 
     /// Add an element to the end.
@@ -244,9 +229,6 @@ protected:
         // Replace the pointer.
         m_storage = newStorage;
         m_capacity = capacity;
-#ifdef DEBUG
-        m_dbgPtr = reinterpret_cast<T*>(m_storage);
-#endif
     }
     /// Destroy a value at a specific position.
     void remove(length_t index)
@@ -272,9 +254,6 @@ protected:
     void allocate(length_t size)
     {
         m_storage = new char[size * sizeof(T)];
-#ifdef DEBUG
-        m_dbgPtr = reinterpret_cast<T*>(m_storage);
-#endif
     }
     /// Free the buffer.
     void free()
@@ -284,17 +263,11 @@ protected:
             for (length_t i = 0; i < m_size; i++) { remove(i); }
             // now we can free up the memory
             delete[] m_storage;
-#ifdef DEBUG
-            m_dbgPtr = nullptr;
-#endif
         }
     }
 private:
     length_t m_capacity;
     length_t m_size;
     char *m_storage;
-#ifdef DEBUG
-    T *m_dbgPtr;
-#endif
 };
 
