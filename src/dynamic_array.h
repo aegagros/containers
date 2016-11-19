@@ -32,7 +32,7 @@ public:
 
     /// Default constructor.
     dynamic_array()
-        : m_capacity(0), m_size(0), m_storage(nullptr)
+        : dynamic_array(0)
     {}
     /// Construct with an initial capacity.
     dynamic_array(length_t capacity)
@@ -42,18 +42,16 @@ public:
     }
     /// Construct with an initial amount of copies (size = capacity)
     dynamic_array(length_t count, const T &val)
-        : m_capacity(count), m_size(count), m_storage(nullptr)
+        : dynamic_array(count)
     {
-        allocate(m_capacity);
         for (length_t i = 0; i < m_size; i++) {
             construct(i, val);
         }
     }
     /// Copy-constructor; performs a copy of the array.
     dynamic_array(const dynamic_array<T> &other)
-        : m_capacity(other.m_capacity), m_size(other.m_size), m_storage(nullptr)
+        : dynamic_array(other.m_capacity)
     {
-        allocate(m_capacity);
         for (int i = 0; i < m_size; i++) {
             construct(i, other[i]);
         }
