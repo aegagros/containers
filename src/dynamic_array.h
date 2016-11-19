@@ -102,7 +102,7 @@ public:
     {
         assert(index);
         for (int i = index + 1; i < m_size; i++) {
-            (*this)[i - 1] = (*this)[i];
+            (*this)[i - 1] = std::move((*this)[i]);
         }
         pop_back();
     }
@@ -111,7 +111,7 @@ public:
     {
         assert(index);
         if (index < m_size - 1) {
-            (*this)[index] = last();
+            swap((*this)[index], last());
         }
         pop_back();
     }
@@ -214,9 +214,9 @@ protected:
     void grow(length_t capacity)
     {
         char *newStorage = new char[capacity * sizeof(T)];
-        // Copy the currently holded elements there.
+        // Move-construct the currently holded elements there.
         for (int i = 0; i < m_size; i++) {
-            new (newStorage + i * sizeof(T)) T((*this)[i]);
+            new (newStorage + i * sizeof(T)) T(std::move((*this)[i]));
         }
 
         // Delete the old array.
