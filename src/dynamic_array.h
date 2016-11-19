@@ -79,7 +79,6 @@ public:
         swap(first.m_size, second.m_size);
         swap(first.m_storage, second.m_storage);
     }
-
     /// Add an element to the end.
     ///
     /// Pass by value to handle the case when we are copying from the same array and the
@@ -167,7 +166,6 @@ public:
         }
         m_size = 0;
     }
-
     /// Perform a linear search for a specific item (operator '==' must be defined for class T)
     template <typename V, typename Pred>
     length_t linearSearch(V value, Pred pred) const
@@ -180,8 +178,6 @@ public:
     template <typename V, typename Pred>
     length_t binarySearch(V value, Pred pred) const
     {
-        // search from the start of the Journal until the end.
-        // when Forget will be implemented, lower bound will change
         int imin = 0;
         int imax = this->last_index();
         int imid;
@@ -199,8 +195,6 @@ public:
         }
         return imin;
     }
-
-
 protected:
     // Helper functions.
     /// Assert an index is within range
@@ -217,7 +211,6 @@ protected:
         for (int i = 0; i < m_size; i++) {
             new (newStorage + i * sizeof(T)) T(std::move((*this)[i]));
         }
-
         // Delete the old array.
         free();
         // Replace the pointer.
