@@ -169,17 +169,16 @@ public:
     }
 
     /// Perform a linear search for a specific item (operator '==' must be defined for class T)
-    template <typename V>
-    length_t linearSearch(V value, bool (*Pred) (const T&, const V&)) const
+    template <typename V, typename Pred>
+    length_t linearSearch(V value, Pred pred) const
     {
         length_t i = 0;
-        while(i < size() && !(Pred((*this)[i], value))) { i++; }
+        while(i < size() && !(pred((*this)[i], value))) { i++; }
         return i;
     }
-
     /// Perform a binary search on the items
-    template <typename V>
-    length_t binarySearch(V value, int (*KeyCompare) (const T&, const V&)) const
+    template <typename V, typename Pred>
+    length_t binarySearch(V value, Pred pred) const
     {
         // search from the start of the Journal until the end.
         // when Forget will be implemented, lower bound will change
@@ -191,7 +190,7 @@ public:
             if (imin >= imax) {
                 break;
             }
-            if (KeyCompare((*this)[imid], value) < 0) {
+            if (pred((*this)[imid], value) < 0) {
                 imin = imid + 1;
             }
             else{
