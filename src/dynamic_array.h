@@ -45,15 +45,15 @@ public:
         : dynamic_array(count)
     {
         for (length_t i = 0; i < m_size; i++) {
-            construct(i, val);
+            push_back(val);
         }
     }
     /// Copy-constructor; performs a copy of the array.
     dynamic_array(const dynamic_array<T> &other)
         : dynamic_array(other.m_capacity)
     {
-        for (int i = 0; i < m_size; i++) {
-            construct(i, other[i]);
+        for (int i = 0; i < other.m_size; i++) {
+            push_back(other[i]);
         }
     }
     /// Move-constructor; move contents of another array.
@@ -89,7 +89,7 @@ public:
         if ((m_size + 1) > m_capacity) {
             grow(m_capacity ? 2 * m_capacity : 1);
         }
-        construct(m_size++, element);
+        new (m_storage + m_size++ * sizeof(T)) T(std::move(element));
     }
     /// Delete the last element.
     void pop_back()
@@ -223,19 +223,6 @@ protected:
         // explicitly call destructor of T to destroy object at index
         T *ptr = reinterpret_cast<T*>(m_storage + index * sizeof(T));
         ptr->~T();
-    }
-    /// Copy-assign a value at a specific position
-    void assign(length_t index, const T &val)
-    {
-        // Assign the value by destroying the old one before constructing the new.
-        remove(index);
-        construct(index, val);
-    }
-    /// Copy-construct a value at a specific position
-    void construct(length_t index, const T &val)
-    {
-        // Use 'placement new' to create a new T as a copy of val on the already preallocated space
-        new (m_storage + index * sizeof(T)) T(val);
     }
     /// Allocate the storage buffer to hold specified number of items.
     void allocate(length_t size)
