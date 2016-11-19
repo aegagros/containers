@@ -14,3 +14,4 @@ add_definitions("-std=c++14")
 # src/ contains all header files
 include_directories(src/)
 
+add_executable(test_dynamic_array tests/test_dynamic_array.cpp src/dynamic_array.h)
