@@ -56,19 +56,16 @@ public:
             construct(i, other[i]);
         }
     }
-    /// Copy-assignment operator
-    dynamic_array<T> &operator=(const dynamic_array<T> &other)
+    /// Move-constructor; move contents of another array.
+    dynamic_array(dynamic_array<T> &&other)
+        : dynamic_array()
     {
-        if (this != &other)
-        {
-            free();
-            m_capacity = other.m_capacity;
-            m_size = other.m_size;
-            allocate(m_capacity);
-            for (length_t i = 0; i < m_size; i++) {
-                construct(i, other[i]);
-            }
-        }
+        swap(*this, other);
+    }
+    /// Copy-assignment operator
+    dynamic_array<T> &operator=(dynamic_array<T> other)
+    {
+        swap(*this, other);
         return *this;
     }
     /// Destructor
