@@ -62,7 +62,7 @@ public:
     {
         swap(*this, other);
     }
-    /// Copy-assignment operator
+    /// unified-assignment operator
     dynamic_array<T> &operator=(dynamic_array<T> other)
     {
         swap(*this, other);
