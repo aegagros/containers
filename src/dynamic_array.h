@@ -91,6 +91,18 @@ public:
         }
         new (m_storage + m_size++ * sizeof(T)) T(std::move(element));
     }
+    /// Construct an element in-place at the end.
+    /// Return reference to the element.
+    template <typename ...Args>
+    T &emplace_back(Args &&...args)
+    {
+        // If size plus one exceeds capacity, grow the array by doubling capacity
+        if ((m_size + 1) > m_capacity) {
+            grow(m_capacity ? 2 * m_capacity : 1);
+        }
+        new (m_storage + m_size++ * sizeof(T)) T(std::forward<Args>(args)...);
+        return last();
+    }
     /// Delete the last element.
     void pop_back()
     {
